@@ -183,7 +183,7 @@ function Pessoas() {
 
 function Vagas() {
   const [cands, setCands] = useState(candIniciais)
-  const [vagaId, setVagaId] = useState(vagas[0].id)
+  const [vagaId, setVagaId] = useState(() => [...vagas].sort((a, b) => b.candidatos - a.candidatos)[0].id)
   const [arrastando, setArrastando] = useState<number | null>(null)
   const vaga = vagas.find((v) => v.id === vagaId)!
   const mover = (etapa: Etapa) => {
