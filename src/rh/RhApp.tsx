@@ -214,7 +214,7 @@ function NovaAdmissao({ aberta, fechar }: { aberta: boolean; fechar: () => void 
       }
     >
       <div className="space-y-4 text-[13px]">
-        <p className="text-c-sub">O colaborador recebe um link pra mandar os documentos e preencher os dados. O RH só confere.</p>
+        <p className="text-c-sub">O colaborador recebe um link pra enviar os documentos e preencher os próprios dados, e o RH confere depois.</p>
         <label className="block">
           <span className="mb-1.5 block font-medium">Nome</span>
           <input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome completo" className="h-10 w-full rounded-lg border border-c-borda bg-c-card px-3 outline-none placeholder:text-c-fraco focus:border-c-acento/60" />
@@ -496,7 +496,7 @@ function Pessoas() {
       <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-[24px] font-semibold tracking-[-0.03em]">Colaboradores</h1>
-          <p className="mt-1 text-[13.5px] text-c-sub">Todas as pessoas das {empresas.length} empresas do grupo num lugar só.</p>
+          <p className="mt-1 text-[13.5px] text-c-sub">Pessoas das {empresas.length} empresas do grupo.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Campo valor={q} onChange={setQ} placeholder="Nome ou cargo" icone={<Search size={14} />} className="w-52" />

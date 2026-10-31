@@ -64,7 +64,7 @@ function Inicio({ pronto }: { pronto: boolean }) {
           <Digitando frases={FRASES} />
         </p>
         <p className="mt-6 max-w-[480px] text-[15.5px] leading-relaxed text-white/55">
-          Há um ano e meio eu tiro empresas das planilhas. Portal de vendas, CRM, RH, ERP conversando com loja virtual e WhatsApp, e relatório que antes alguém montava na mão e agora sai sozinho.
+          Sou desenvolvedor full stack há um ano e meio, quase sempre com Java, Spring Boot e React. Já fiz portal de vendas, sistema de RH, integração de ERP com loja virtual e WhatsApp, e alguns robôs que geram relatório sozinhos.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <a
@@ -119,7 +119,7 @@ function Titulo({ sobre, texto }: { sobre: string; texto: string }) {
 function Sobre() {
   return (
     <section id="sobre" className="mx-auto max-w-6xl px-5 py-28">
-      <Titulo sobre="// quem escreve o código" texto="Sobre mim" />
+      <Titulo sobre="// sobre" texto="Sobre mim" />
 
       <div className="mt-16 grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
         <Surge>
@@ -143,17 +143,17 @@ function Sobre() {
         <div>
           <Surge>
             <h3 className="text-[30px] font-bold leading-tight tracking-tight md:text-[38px]">
-              Eu escrevo o sistema
+              Full stack, mas o que eu
               <br />
-              <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">e também converso com quem usa.</span>
+              <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">mais faço é integração.</span>
             </h3>
           </Surge>
           <Surge atraso={100}>
             <p className="mt-6 text-[15.5px] leading-relaxed text-white/60">
-              Sou desenvolvedor full stack. No dia a dia trabalho com <b className="font-semibold text-white">Java e Spring Boot</b> no back-end e <b className="font-semibold text-white">React com TypeScript</b> no front, e passo boa parte do tempo ligando sistemas que não foram feitos para conversar: ERP, loja virtual, WhatsApp, e-mail, planilha.
+              No dia a dia uso <b className="font-semibold text-white">Java com Spring Boot</b> no back-end e <b className="font-semibold text-white">React com TypeScript</b> no front. Boa parte do meu trabalho é fazer sistemas diferentes trocarem dados entre si, como ERP, loja virtual, WhatsApp, e-mail e as planilhas que sempre aparecem no meio.
             </p>
             <p className="mt-4 text-[15.5px] leading-relaxed text-white/60">
-              Gosto de entender o processo antes de abrir o editor. Muitas vezes o problema não é falta de sistema, é uma planilha que três pessoas editam ao mesmo tempo.
+              Antes de começar, prefiro conversar com quem vai usar o sistema e ver como o trabalho é feito hoje. Isso evita muito retrabalho depois.
             </p>
           </Surge>
           <div className="mt-8 grid grid-cols-3 gap-3">
@@ -192,7 +192,7 @@ function Projetos() {
   const [aba, setAba] = useState<(typeof ABAS)[number]>('Projetos')
   return (
     <section id="projetos" className="mx-auto max-w-6xl px-5 py-28">
-      <Titulo sobre="// o que já está rodando" texto="Portfólio" />
+      <Titulo sobre="// projetos" texto="Portfólio" />
 
       <div className="mx-auto mt-10 flex w-fit flex-wrap justify-center gap-1 rounded-2xl border border-white/10 bg-white/[0.03] p-1.5">
         {ABAS.map((a) => (
@@ -330,11 +330,11 @@ function Contato() {
           <div className="pointer-events-none absolute left-1/2 top-0 h-40 w-[70%] -translate-x-1/2 rounded-full bg-blue-600/25 blur-[90px]" />
           <Sparkles className="mx-auto text-blue-300" size={22} />
           <h2 className="mx-auto mt-5 max-w-3xl text-[32px] font-bold leading-[1.1] tracking-[-0.03em] text-white md:text-[50px]">
-            Tem uma planilha que virou sistema na marra?{' '}
-            <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">Vamos conversar.</span>
+            Precisa de algo{' '}
+            <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">parecido?</span>
           </h2>
           <p className="mx-auto mt-6 max-w-xl text-[15.5px] leading-relaxed text-white/55">
-            Sistema sob medida, integração entre sistemas, bot de WhatsApp ou Telegram, automação de rotina. Me chama pela plataforma onde você me encontrou e me conta o problema.
+            Pode ser um sistema novo, uma integração, um bot ou a automação de alguma tarefa repetitiva. Me chama pela plataforma onde você me achou e explica o que precisa, que eu respondo por lá.
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-3">
             <a href={GITHUB} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-5 text-[14px] font-medium text-white/85 transition hover:border-white/35">

@@ -804,7 +804,7 @@ function Clientes() {
       <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-[24px] font-semibold tracking-[-0.03em]">Clientes</h1>
-          <p className="mt-1 text-[13.5px] text-c-sub">Carteira com a nota de saúde de cada conta: quanto compra do potencial e há quanto tempo não compra.</p>
+          <p className="mt-1 text-[13.5px] text-c-sub">A nota de saúde vai de 0 a 100 e leva em conta quanto o cliente compra do potencial e há quanto tempo não compra.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Campo valor={q} onChange={setQ} placeholder="Cliente, cidade ou vendedor" icone={<Search size={14} />} className="w-60" />

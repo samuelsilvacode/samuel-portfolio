@@ -39,15 +39,15 @@ export const projetos: Projeto[] = [
     slug: 'crm',
     nome: 'Portal de vendas e CRM',
     tipo: 'Sistema web',
-    resumo: 'O sistema que o time comercial abre de manhã e fecha no fim do dia: carteira, pipeline, pedidos e metas num lugar só.',
+    resumo: 'Portal usado pelo time comercial pra cuidar da carteira de clientes, do pipeline, dos pedidos e da meta do mês.',
     texto: [
-      'Antes era planilha e consulta direto no ERP. Agora o vendedor abre a ficha do cliente e vê pedidos, ligações, reclamações e oportunidades num lugar só, e a coordenação acompanha meta e pipeline em tempo real.',
-      'O sistema original roda em produção há mais de um ano, com cerca de 2.000 commits. Esta é uma versão de demonstração com empresa e dados fictícios, montada para mostrar as telas principais.',
+      'Antes o vendedor consultava o ERP e mantinha as próprias planilhas. No portal ele abre a ficha do cliente e encontra pedidos, ligações, reclamações e oportunidades juntos, e a coordenação acompanha a meta sem precisar pedir relatório pra ninguém.',
+      'O sistema original está em produção há mais de um ano e tem perto de 2.000 commits. Como o código não é meu pra mostrar, montei esta versão de demonstração com empresa e dados inventados.',
     ],
     pontos: [
       'Painel com meta do mês, funil de vendas e atividade do time ao vivo',
       'Pipeline em kanban com arrastar e soltar e valor ponderado por etapa',
-      'Ficha 360° com linha do tempo, nota de saúde e resumo com IA',
+      'Ficha do cliente com histórico, nota de saúde e resumo feito por IA',
       'Pedidos com detalhe dos itens, filtros e exportação para Excel',
       'Busca rápida com Ctrl K de qualquer tela',
       'Modo claro e escuro',
@@ -63,10 +63,10 @@ export const projetos: Projeto[] = [
     slug: 'rh',
     nome: 'Central de RH',
     tipo: 'Sistema web',
-    resumo: 'Tudo que o RH fazia por e-mail e planilha virou um portal: pessoas, vagas, treinamentos, clima e salas.',
+    resumo: 'Portal de RH com cadastro de pessoas, vagas, treinamentos, pesquisa de clima e reserva de salas.',
     texto: [
-      'Feito para um grupo com mais de uma empresa: cadastro de pessoas, processo seletivo, avaliação de experiência com alerta de prazo, treinamentos e PDI, pesquisa de clima e a agenda das salas de reunião.',
-      'Também é uma versão de demonstração, com dados fictícios, das telas que mais usam no dia a dia.',
+      'Foi feito pra um grupo com mais de uma empresa, onde o RH controlava quase tudo por e-mail e planilha. Hoje o cadastro das pessoas, o processo seletivo, o prazo das avaliações de experiência, os treinamentos, a pesquisa de clima e a agenda das salas ficam no mesmo sistema.',
+      'Assim como o CRM, é uma versão de demonstração com dados inventados.',
     ],
     pontos: [
       'Avaliação de experiência com prazo de 45 e 90 dias e pedido ao gestor',
@@ -87,10 +87,10 @@ export const projetos: Projeto[] = [
     slug: 'guia-financeiro',
     nome: 'Robô financeiro pessoal',
     tipo: 'Bot e automação',
-    resumo: 'Um robô que organiza minhas finanças sozinho: lê lançamentos, separa por categoria e avisa quando o mês sai do planejado.',
+    resumo: 'Robô que fiz pra organizar meu próprio dinheiro. Ele lê os lançamentos, separa por categoria e me avisa quando algum gasto passa do que eu planejei.',
     texto: [
-      'Projeto pessoal que roda num servidor Linux na nuvem, com rotinas agendadas e banco SQLite versionado com migrations.',
-      'Está em desenvolvimento: a próxima etapa é conversar com ele pelo Telegram.',
+      'Roda num servidor Linux na nuvem, com tarefas agendadas e um banco SQLite.',
+      'Ainda estou mexendo nele. O próximo passo é conseguir conversar com ele pelo Telegram.',
     ],
     pontos: ['Rotinas agendadas em VPS Linux', 'Banco com migrations (Alembic)', 'Orçamento por categoria com alertas', 'Integração com Telegram (em andamento)'],
     stack: ['Python', 'SQLite', 'Linux', 'Telegram'],
@@ -99,10 +99,10 @@ export const projetos: Projeto[] = [
 ]
 
 export const servicos = [
-  { titulo: 'Integrações', texto: 'ERP com loja virtual, gateway de pagamento, WhatsApp, e-mail, planilha virando dado no sistema.' },
-  { titulo: 'Sistemas sob medida', texto: 'Painéis, CRM, portais internos. Do protótipo das telas até o servidor no ar.' },
-  { titulo: 'Bots e IA', texto: 'Atendimento no WhatsApp ou Telegram, transcrição de ligações, resumo e extração de dados com IA.' },
-  { titulo: 'Automação e dados', texto: 'Coleta de dados públicos, relatórios em Excel e PDF que antes alguém montava na mão.' },
+  { titulo: 'Integrações', texto: 'Ligar ERP com loja virtual, gateway de pagamento, WhatsApp ou e-mail. Também faço importação de planilha pra dentro do sistema.' },
+  { titulo: 'Sistemas sob medida', texto: 'Painel, CRM ou portal interno, desde o desenho das telas até deixar rodando no servidor.' },
+  { titulo: 'Bots e IA', texto: 'Bot de atendimento no WhatsApp ou Telegram, transcrição de ligação e leitura de documentos com IA.' },
+  { titulo: 'Automação e dados', texto: 'Coleta de dados de sites públicos e relatório em Excel ou PDF gerado automaticamente.' },
 ]
 
 export const numeros = [
@@ -122,9 +122,9 @@ export const tecnologias: { grupo: string; itens: Icone[] }[] = [
 ]
 
 export const etapas = [
-  ['Entendo o problema', 'Antes de escrever código, converso com quem vai usar e mapeio o processo de hoje: planilhas, sistemas, quem aprova o quê.'],
-  ['Mostro antes de construir', 'Protótipo das telas ou desenho do fluxo da integração. Você aprova o caminho antes de pagar por ele.'],
-  ['Entrego por etapas', 'Cada fase tem escopo, prazo e valor fechados. Você usa o sistema de verdade desde a primeira entrega.'],
+  ['Conversa primeiro', 'Quero entender como o trabalho é feito hoje, quais planilhas e sistemas entram nisso e quem aprova cada etapa.'],
+  ['Desenho antes do código', 'Te mostro as telas ou o fluxo da integração e só começo a programar depois que você aprovar.'],
+  ['Entrega em partes', 'Divido o projeto em fases com prazo e valor combinados. Você já usa a primeira parte enquanto eu faço a próxima.'],
 ]
 
 export const GITHUB = 'https://github.com/samuelsilvacode'

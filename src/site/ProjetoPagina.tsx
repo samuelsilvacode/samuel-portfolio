@@ -64,7 +64,7 @@ export default function ProjetoPagina() {
 
         <Surge>
           <Vidro className="mt-14 p-7">
-            <h2 className="text-[18px] font-semibold text-white">O que dá pra fazer</h2>
+            <h2 className="text-[18px] font-semibold text-white">O que tem no sistema</h2>
             <ul className="mt-5 grid gap-3 sm:grid-cols-2">
               {p.pontos.map((x) => (
                 <li key={x} className="flex gap-3 text-[14.5px] text-white/65">

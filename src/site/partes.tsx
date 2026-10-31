@@ -123,7 +123,7 @@ export function Rodape() {
         <span>
           <span className="text-blue-400">ss</span> · samuel silva
         </span>
-        <span>feito com React, TypeScript e física caseira · {new Date().getFullYear()}</span>
+        <span>{new Date().getFullYear()} · feito com React e TypeScript</span>
       </div>
     </footer>
   )
