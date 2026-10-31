@@ -1,6 +1,6 @@
 # samuel-portfolio
 
-No ar: https://samuelsilvacode.github.io/samuel-portfolio/
+No ar: https://samuelsilvadev.vercel.app
 
 Portfólio com versões de demonstração de dois sistemas que desenvolvi: um portal de vendas/CRM e uma central de RH. A empresa e os dados são fictícios.
 
