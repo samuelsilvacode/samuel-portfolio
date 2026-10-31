@@ -42,7 +42,7 @@ export const projetos: Projeto[] = [
     resumo: 'Portal usado pelo time comercial pra cuidar da carteira de clientes, do pipeline, dos pedidos e da meta do mês.',
     texto: [
       'Antes o vendedor consultava o ERP e mantinha as próprias planilhas. No portal ele abre a ficha do cliente e encontra pedidos, ligações, reclamações e oportunidades juntos, e a coordenação acompanha a meta sem precisar pedir relatório pra ninguém.',
-      'O sistema original está em produção há mais de um ano e tem perto de 2.000 commits. Como o código não é meu pra mostrar, montei esta versão de demonstração com empresa e dados inventados.',
+      'O sistema original está em produção e é usado todo dia pelo time comercial. Como o código não é meu pra mostrar, montei esta versão de demonstração com empresa e dados inventados.',
     ],
     pontos: [
       'Painel com meta do mês, funil de vendas e atividade do time ao vivo',
@@ -106,9 +106,9 @@ export const servicos = [
 ]
 
 export const numeros = [
-  { valor: 2000, sufixo: '+', rotulo: 'commits no CRM' },
+  { valor: 12, sufixo: ' meses', rotulo: 'como dev' },
   { valor: 10, sufixo: '+', rotulo: 'integrações entregues' },
-  { valor: 18, sufixo: ' meses', rotulo: 'em produção' },
+  { valor: 2, sufixo: '', rotulo: 'sistemas completos no ar' },
 ]
 
 type Icone = { title: string; path: string; hex: string }

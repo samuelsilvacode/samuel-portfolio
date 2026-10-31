@@ -64,7 +64,7 @@ function Inicio({ pronto }: { pronto: boolean }) {
           <Digitando frases={FRASES} />
         </p>
         <p className="mt-6 max-w-[480px] text-[15.5px] leading-relaxed text-white/55">
-          Sou desenvolvedor full stack há um ano e meio, quase sempre com Java, Spring Boot e React. Já fiz portal de vendas, sistema de RH, integração de ERP com loja virtual e WhatsApp, e alguns robôs que geram relatório sozinhos.
+          Trabalho como desenvolvedor full stack há cerca de um ano, quase sempre com Java, Spring Boot e React. Já fiz portal de vendas, sistema de RH, integração de ERP com loja virtual e WhatsApp, e alguns robôs que geram relatório sozinhos.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <a
