@@ -1,5 +1,5 @@
-import { useMemo, useState, type ReactNode } from 'react'
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import {
   Briefcase,
@@ -14,19 +14,21 @@ import {
   Mail,
   MapPin,
   MessageSquareText,
+  Moon,
   Plane,
   Plus,
   Search,
   Send,
   Smile,
   Star,
+  Sun,
   UserPlus,
   Users,
   type LucideIcon,
 } from 'lucide-react'
 import { dataBR } from '../ui'
 import { Avatar, Barra, Botao, Campo, Card, CrmProvider, Escolha, Gaveta, Mini, Modal, Pill, Segmentado, useCrm } from '../kit'
-import Casca, { type ItemBusca, type ItemNav } from '../casca'
+import { Busca, Sino, type ItemBusca } from '../casca'
 import {
   admissoesMes,
   candidatos as candIniciais,
@@ -77,25 +79,20 @@ export default function RhApp() {
   )
 }
 
-// ---------- estrutura ----------
+// ---------- estrutura (menu no topo, diferente do CRM) ----------
 function Logo() {
   return (
-    <div className="flex items-center gap-2.5">
-      <span className="grid h-8 w-8 place-items-center rounded-[10px] bg-gradient-to-br from-[#14b8a6] to-[#0f766e] shadow-[0_6px_16px_-6px_rgba(13,148,136,0.9)]">
+    <Link to="/rh" className="flex items-center gap-2.5">
+      <span className="grid h-9 w-9 place-items-center rounded-full bg-[#d9773f] shadow-[0_6px_16px_-8px_rgba(217,119,63,0.9)]">
         <svg width="18" height="12" viewBox="0 0 20 14" aria-hidden>
-          <path d="M3 12a7 7 0 0 1 14 0" fill="none" stroke="white" strokeWidth="2.4" strokeLinecap="round" />
-          <path d="M1 13h18" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M3 12a7 7 0 0 1 14 0" fill="none" stroke="#fff7ed" strokeWidth="2.4" strokeLinecap="round" />
+          <path d="M1 13h18" stroke="#fff7ed" strokeWidth="1.8" strokeLinecap="round" />
         </svg>
       </span>
-      <div className="leading-tight">
-        <div className="text-[14px] font-semibold tracking-[-0.01em]">horizonte</div>
-        <div className="text-[11px] text-c-fraco">Grupo Horizonte · RH</div>
-      </div>
-    </div>
+      <span className="titulo-serif text-[21px] leading-none">horizonte</span>
+    </Link>
   )
 }
-
-const NOMES: Record<string, string> = { '': 'Início', pessoas: 'Colaboradores', vagas: 'Processo seletivo', treinamentos: 'Treinamentos e PDI', clima: 'Pesquisa de clima', salas: 'Reserva de salas' }
 
 function buscar(t: string): ItemBusca[] {
   const paginas: ItemBusca[] = [
@@ -111,57 +108,83 @@ function buscar(t: string): ItemBusca[] {
   return [...paginas, ...vg, ...pessoas].filter((i) => !t || (i.titulo + i.sub).toLowerCase().includes(t))
 }
 
+const MENU: { to: string; label: string; icon: LucideIcon; end?: boolean; conta?: number }[] = [
+  { to: '/rh', label: 'Início', icon: Home, end: true },
+  { to: '/rh/pessoas', label: 'Colaboradores', icon: Users, conta: colaboradores.length },
+  { to: '/rh/vagas', label: 'Processo seletivo', icon: Briefcase, conta: vagasIniciais.length },
+  { to: '/rh/treinamentos', label: 'Treinamentos e PDI', icon: GraduationCap },
+  { to: '/rh/clima', label: 'Pesquisa de clima', icon: MessageSquareText },
+  { to: '/rh/salas', label: 'Reserva de salas', icon: CalendarRange },
+]
+
 function Estrutura({ children }: { children: ReactNode }) {
   const [convite, setConvite] = useState(false)
-  const exp = colaboradores.filter((c) => c.situacao === 'Experiência').length
-  const nav: ItemNav[] = [
-    { to: '/rh', label: 'Início', icon: Home, end: true, grupo: 'Geral' },
-    { to: '/rh/pessoas', label: 'Colaboradores', icon: Users, conta: colaboradores.length, grupo: 'Pessoas' },
-    { to: '/rh/vagas', label: 'Processo seletivo', icon: Briefcase, conta: vagasIniciais.length, grupo: 'Pessoas' },
-    { to: '/rh/treinamentos', label: 'Treinamentos e PDI', icon: GraduationCap, grupo: 'Desenvolvimento' },
-    { to: '/rh/clima', label: 'Pesquisa de clima', icon: MessageSquareText, grupo: 'Desenvolvimento' },
-    { to: '/rh/salas', label: 'Reserva de salas', icon: CalendarRange, grupo: 'Serviços' },
-  ]
-  const lgpd = treinamentos.find((t) => t.nome.startsWith('LGPD'))!
-  const pctLgpd = Math.round((lgpd.concluidos / lgpd.inscritos) * 100)
+  const [buscando, setBuscando] = useState(false)
+  const { escuro, alternar } = useCrm()
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        setBuscando((b) => !b)
+      }
+    }
+    window.addEventListener('keydown', h)
+    return () => window.removeEventListener('keydown', h)
+  }, [])
   return (
     <>
-      <Casca
-        logo={<Logo />}
-        nav={nav}
-        atalhos={[
-          { titulo: `Em experiência (${exp})`, to: '/rh/pessoas?f=Experiência', cor: 'bg-amber-500' },
-          { titulo: 'De férias', to: '/rh/pessoas?f=Férias', cor: 'bg-sky-500' },
-          { titulo: 'Vaga mais procurada', to: '/rh/vagas', cor: 'bg-teal-500' },
-        ]}
-        cartao={
-          <>
-            <div className="flex items-center justify-between text-[12px]">
-              <span className="font-medium">LGPD obrigatório</span>
-              <span className="font-semibold tabular-nums text-c-acento">{pctLgpd}%</span>
-            </div>
-            <div className="mt-2">
-              <Barra pct={pctLgpd} />
-            </div>
-            <p className="mt-2 text-[11.5px] text-c-fraco">
-              {lgpd.inscritos - lgpd.concluidos} pessoas ainda não fizeram · prazo {dataBR(lgpd.prazo)}
-            </p>
-          </>
-        }
-        usuario="Renata Lopes"
-        cargo="Business Partner de RH"
-        acao={
-          <Botao primario onClick={() => setConvite(true)}>
+      <header className="sticky top-0 z-30 border-b border-c-borda bg-c-bg/85 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-[1240px] items-center gap-3 px-4 md:px-8">
+          <Logo />
+          <span className="ml-2 hidden rounded-full border border-c-borda px-2.5 py-0.5 text-[11.5px] text-c-sub md:inline">Grupo Horizonte</span>
+          <button onClick={() => setBuscando(true)} className="ml-auto hidden h-9 w-64 items-center gap-2 rounded-full bg-c-hover px-4 text-[13px] text-c-fraco hover:text-c-sub md:flex">
+            <Search size={14} /> Buscar pessoa, vaga…
+            <kbd className="ml-auto text-[10.5px] font-medium">Ctrl K</kbd>
+          </button>
+          <button onClick={() => setBuscando(true)} className="ml-auto grid h-9 w-9 place-items-center rounded-full text-c-sub hover:bg-c-hover md:hidden" aria-label="Buscar">
+            <Search size={17} />
+          </button>
+          <Sino notificacoes={notificacoesRh} />
+          <button onClick={alternar} title={escuro ? 'Modo claro' : 'Modo escuro'} className="grid h-9 w-9 place-items-center rounded-full text-c-sub hover:bg-c-hover">
+            {escuro ? <Sun size={17} /> : <Moon size={17} />}
+          </button>
+          <Botao primario className="!rounded-full" onClick={() => setConvite(true)}>
             <UserPlus size={15} /> <span className="hidden sm:inline">Nova admissão</span>
           </Botao>
-        }
-        secao="RH"
-        trilha={(p) => [NOMES[p[0] ?? ''] ?? 'Início']}
-        busca={buscar}
-        notificacoes={notificacoesRh}
-      >
-        {children}
-      </Casca>
+          <span className="hidden items-center gap-2 border-l border-c-borda pl-3 lg:flex">
+            <Avatar nome="Renata Lopes" tam={32} />
+            <span className="leading-tight">
+              <span className="block text-[13px] font-medium">Renata Lopes</span>
+              <span className="block text-[11.5px] text-c-fraco">Business Partner</span>
+            </span>
+          </span>
+        </div>
+        <nav className="mx-auto flex max-w-[1240px] gap-1 overflow-x-auto px-4 md:px-8">
+          {MENU.map((m) => (
+            <NavLink
+              key={m.to}
+              to={m.to}
+              end={m.end}
+              className={({ isActive }) =>
+                `relative flex shrink-0 items-center gap-2 px-3 pb-3 pt-1 text-[13.5px] font-medium transition ${isActive ? 'text-c-texto after:absolute after:inset-x-3 after:-bottom-px after:h-[2.5px] after:rounded-full after:bg-c-acento' : 'text-c-sub hover:text-c-texto'}`
+              }
+            >
+              <m.icon size={15} />
+              {m.label}
+              {m.conta != null && <span className="rounded-full bg-c-hover px-1.5 text-[11px] font-semibold tabular-nums text-c-sub">{m.conta}</span>}
+            </NavLink>
+          ))}
+          <Link to="/" className="ml-auto hidden shrink-0 items-center px-3 pb-3 pt-1 text-[12px] text-c-fraco hover:text-c-texto lg:flex">
+            ← portfólio
+          </Link>
+        </nav>
+      </header>
+      <main className="mx-auto max-w-[1240px] px-4 pb-14 pt-8 md:px-8">{children}</main>
+      <Busca aberta={buscando} fechar={() => setBuscando(false)} busca={buscar} />
       <NovaAdmissao aberta={convite} fechar={() => setConvite(false)} />
     </>
   )
@@ -226,7 +249,7 @@ function Kpi({ titulo, valor, nota, serie, cor, icone: I, tom = 'cinza' }: { tit
             <I size={16} />
           </span>
         </div>
-        <div className="mt-1.5 text-[26px] font-semibold tracking-[-0.03em] tabular-nums">{valor}</div>
+        <div className="titulo-serif mt-1.5 text-[30px] tabular-nums">{valor}</div>
         <div className="mt-1">
           <Pill tom={tom} ponto={false}>
             {nota}
@@ -298,10 +321,10 @@ function Inicio() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Kpi titulo="Headcount" valor={String(colaboradores.length)} nota={`${empresas.length} empresas`} serie={serieRh(2, 36, 0.02)} cor="#0d9488" icone={Users} />
-        <Kpi titulo="Em experiência" valor={String(experiencia.length)} nota={`${vencendo} vencendo em 15 dias`} serie={serieRh(5, 4, 0.1)} cor="#f59e0b" icone={Clock} tom="amarelo" />
-        <Kpi titulo="Vagas abertas" valor={String(vagasIniciais.length)} nota={`${candIniciais.length} candidatos`} serie={serieRh(9, 3, 0.08)} cor="#6366f1" icone={Briefcase} tom="roxo" />
-        <Kpi titulo="eNPS 2026" valor={String(enps.promotores - enps.detratores)} nota="+6 vs. 2025" serie={serieRh(13, 30, 0.03)} cor="#22c55e" icone={Smile} tom="verde" />
+        <Kpi titulo="Headcount" valor={String(colaboradores.length)} nota={`${empresas.length} empresas`} serie={serieRh(2, 36, 0.02)} cor="#2f6b4f" icone={Users} />
+        <Kpi titulo="Em experiência" valor={String(experiencia.length)} nota={`${vencendo} vencendo em 15 dias`} serie={serieRh(5, 4, 0.1)} cor="#d9773f" icone={Clock} tom="amarelo" />
+        <Kpi titulo="Vagas abertas" valor={String(vagasIniciais.length)} nota={`${candIniciais.length} candidatos`} serie={serieRh(9, 3, 0.08)} cor="#b08a3e" icone={Briefcase} tom="amarelo" />
+        <Kpi titulo="eNPS 2026" valor={String(enps.promotores - enps.detratores)} nota="+6 vs. 2025" serie={serieRh(13, 30, 0.03)} cor="#5b8c6e" icone={Smile} tom="verde" />
       </div>
 
       <div className="mt-4 grid items-start gap-4 xl:grid-cols-[1fr_360px]">
@@ -1069,13 +1092,13 @@ const diasSemana = [
   ['sex', '06/11'],
 ]
 const COR_ASSUNTO: Record<string, string> = {
-  'Reunião comercial': '#6366f1',
-  Entrevista: '#f59e0b',
-  '1:1': '#ec4899',
-  Treinamento: '#0ea5e9',
-  'Alinhamento semanal': '#22c55e',
-  'Visita de fornecedor': '#a855f7',
-  Reunião: '#0d9488',
+  'Reunião comercial': '#4f7a8c',
+  Entrevista: '#d9773f',
+  '1:1': '#b5546b',
+  Treinamento: '#b08a3e',
+  'Alinhamento semanal': '#5b8c6e',
+  'Visita de fornecedor': '#8a6a9c',
+  Reunião: '#2f6b4f',
 }
 
 function Salas() {

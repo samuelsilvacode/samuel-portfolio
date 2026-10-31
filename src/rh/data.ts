@@ -121,21 +121,21 @@ export const admissoesMes = ['Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out'].map((m) =
 // ---- extras da versão nova ----
 
 export const corEtapa: Record<Etapa, string> = {
-  Triagem: '#94a3b8',
-  'Entrevista RH': '#38bdf8',
-  'Entrevista gestor': '#a78bfa',
-  Proposta: '#f59e0b',
-  Contratado: '#22c55e',
+  Triagem: '#b3a594',
+  'Entrevista RH': '#4f7a8c',
+  'Entrevista gestor': '#b08a3e',
+  Proposta: '#d9773f',
+  Contratado: '#2f6b4f',
 }
 
 export const corDepto: Record<string, string> = {
-  Comercial: '#0d9488',
-  Financeiro: '#6366f1',
-  Logística: '#f59e0b',
-  TI: '#0ea5e9',
-  RH: '#ec4899',
-  Atendimento: '#22c55e',
-  Compras: '#a855f7',
+  Comercial: '#2f6b4f',
+  Financeiro: '#4f7a8c',
+  Logística: '#d9773f',
+  TI: '#7d9bb0',
+  RH: '#b5546b',
+  Atendimento: '#8fb08a',
+  Compras: '#b08a3e',
 }
 
 export const notificacoesRh = [

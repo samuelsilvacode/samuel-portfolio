@@ -7,7 +7,10 @@ export type Cores = { acento: string; acentoSuave: string; grade: string; eixo: 
 const CLARO: Cores = { acento: '#6357f5', acentoSuave: '#a5a0fb', grade: '#ececf2', eixo: '#9294a4', texto: '#12121c', card: '#ffffff', borda: '#e5e5ec', meta: '#c4c4d0' }
 const ESCURO: Cores = { acento: '#8b80ff', acentoSuave: '#5b52c9', grade: '#26263a', eixo: '#6f7188', texto: '#ececf4', card: '#12121a', borda: '#262634', meta: '#4a4a62' }
 // o RH usa a mesma base com acento verde-azulado
-const ACENTO_RH = { claro: { acento: '#0d9488', acentoSuave: '#5eead4' }, escuro: { acento: '#14b8a6', acentoSuave: '#115e59' } }
+const ACENTO_RH = {
+  claro: { acento: '#2f6b4f', acentoSuave: '#9cc5ae', grade: '#ece3d6', eixo: '#a39482', meta: '#d9a273', card: '#fffcf7', borda: '#e8dfd3', texto: '#261f19' },
+  escuro: { acento: '#6fbf95', acentoSuave: '#2c5a44', grade: '#302922', eixo: '#8a7c6c', meta: '#b5763f', card: '#1f1b17', borda: '#362f28', texto: '#f1eae1' },
+}
 export type Variante = 'crm' | 'rh'
 
 type Ctx = { escuro: boolean; alternar: () => void; cores: Cores; avisar: (texto: string, tipo?: 'ok' | 'info') => void }
@@ -59,7 +62,7 @@ export function CrmProvider({ children, variante = 'crm' }: { children: ReactNod
 // ---------- peças ----------
 export function Card({ children, className = '', titulo, extra, semPad }: { children: ReactNode; className?: string; titulo?: ReactNode; extra?: ReactNode; semPad?: boolean }) {
   return (
-    <section className={`rounded-2xl border border-c-borda bg-c-card shadow-[0_1px_2px_rgba(16,16,40,0.04)] ${className}`}>
+    <section className={`cartao rounded-2xl border border-c-borda bg-c-card shadow-[0_1px_2px_rgba(16,16,40,0.04)] ${className}`}>
       {titulo && (
         <div className="flex items-center justify-between gap-3 px-5 pt-4">
           <h2 className="text-[14px] font-semibold tracking-[-0.01em]">{titulo}</h2>

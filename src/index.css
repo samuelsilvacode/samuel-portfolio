@@ -23,5 +23,18 @@ html { scroll-behavior: smooth; }
 @keyframes surgeDireita { from { transform: translateX(100%) } to { transform: none } }
 @keyframes surgeBaixo { from { opacity: 0; transform: translateY(8px) scale(.98) } to { opacity: 1; transform: none } }
 @keyframes brilhoNovo { from { background: rgb(var(--c-acento) / .12) } to { background: transparent } }
-.crm.rh { --c-acento: 13 148 136; }
-.crm.rh.escuro { --c-acento: 20 184 166; }
+/* RH: identidade própria, quente e editorial */
+.crm.rh {
+  --c-bg: 246 241 234; --c-card: 255 252 247; --c-borda: 232 223 211; --c-texto: 38 31 25; --c-sub: 106 94 82;
+  --c-fraco: 158 146 133; --c-hover: 239 232 222; --c-acento: 47 107 79; --c-lateral: 246 241 234;
+  font-family: 'DM Sans', system-ui, sans-serif; font-feature-settings: normal;
+}
+.crm.rh.escuro {
+  --c-bg: 21 18 15; --c-card: 31 27 23; --c-borda: 54 47 40; --c-texto: 241 234 225; --c-sub: 182 170 156;
+  --c-fraco: 128 117 105; --c-hover: 43 38 32; --c-acento: 70 150 112; --c-lateral: 21 18 15;
+}
+.crm.rh h1, .crm.rh .titulo-serif { font-family: Fraunces, Georgia, serif; font-weight: 600; letter-spacing: -0.015em; }
+.crm.rh h1 { font-size: 30px; }
+.crm.rh .cartao { border-color: transparent; border-radius: 22px; box-shadow: 0 1px 0 rgb(var(--c-borda)), 0 10px 30px -18px rgba(70, 45, 20, 0.25); }
+.crm.rh.escuro .cartao { box-shadow: 0 1px 0 rgb(var(--c-borda)), 0 10px 30px -18px rgba(0, 0, 0, 0.6); }
+.crm.rh .cartao h2 { font-family: Fraunces, Georgia, serif; font-size: 16px; font-weight: 600; }

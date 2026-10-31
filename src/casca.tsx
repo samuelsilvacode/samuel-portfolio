@@ -128,11 +128,6 @@ function Topo({ abrirMenu, abrirBusca, acao, secao, trilha, notificacoes }: { ab
   const { pathname } = useLocation()
   const partes = pathname.split('/').filter(Boolean).slice(1)
   const migalhas = trilha(partes)
-  const [sino, setSino] = useState(false)
-  const [lidas, setLidas] = useState(false)
-  const fechar = useCallback(() => setSino(false), [])
-  const ref = useFora<HTMLDivElement>(sino, fechar)
-  const naoLidas = lidas ? 0 : notificacoes.filter((n) => !n.lida).length
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-c-borda bg-c-bg/80 px-4 backdrop-blur-xl md:px-8">
       <button className="-ml-1 grid h-9 w-9 place-items-center rounded-lg hover:bg-c-hover lg:hidden" onClick={abrirMenu} aria-label="Menu">
@@ -151,32 +146,7 @@ function Topo({ abrirMenu, abrirBusca, acao, secao, trilha, notificacoes }: { ab
         <button onClick={abrirBusca} className="grid h-9 w-9 place-items-center rounded-lg text-c-sub hover:bg-c-hover lg:hidden" aria-label="Buscar">
           <Search size={17} />
         </button>
-        <div ref={ref} className="relative">
-          <button onClick={() => setSino(!sino)} className="relative grid h-9 w-9 place-items-center rounded-lg text-c-sub hover:bg-c-hover" aria-label="Notificações">
-            <Bell size={17} />
-            {naoLidas > 0 && <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-c-bg" />}
-          </button>
-          {sino && (
-            <div className="absolute right-0 top-11 w-[340px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-c-borda bg-c-card shadow-2xl animate-[surgeBaixo_0.18s_ease-out]">
-              <div className="flex items-center justify-between border-b border-c-borda px-4 py-3">
-                <span className="text-[14px] font-semibold">Notificações</span>
-                <button onClick={() => setLidas(true)} className="text-[12px] font-medium text-c-acento hover:underline">
-                  Marcar como lidas
-                </button>
-              </div>
-              {notificacoes.map((n) => (
-                <div key={n.id} className="flex gap-3 border-b border-c-borda px-4 py-3 last:border-0 hover:bg-c-hover">
-                  <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${!n.lida && !lidas ? 'bg-c-acento' : 'bg-transparent'}`} />
-                  <div className="min-w-0">
-                    <p className="text-[13px] font-medium">{n.titulo}</p>
-                    <p className="text-[12.5px] text-c-sub">{n.texto}</p>
-                    <p className="mt-0.5 text-[11.5px] text-c-fraco">{n.tempo}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <Sino notificacoes={notificacoes} />
         {acao}
         <Link to="/" className="hidden whitespace-nowrap rounded-lg px-2 text-[12px] text-c-fraco hover:text-c-texto xl:block">
           ← portfólio
@@ -186,7 +156,43 @@ function Topo({ abrirMenu, abrirBusca, acao, secao, trilha, notificacoes }: { ab
   )
 }
 
-function Busca({ aberta, fechar, busca }: { aberta: boolean; fechar: () => void; busca: Props['busca'] }) {
+export function Sino({ notificacoes }: { notificacoes: Notificacao[] }) {
+  const [sino, setSino] = useState(false)
+  const [lidas, setLidas] = useState(false)
+  const fechar = useCallback(() => setSino(false), [])
+  const ref = useFora<HTMLDivElement>(sino, fechar)
+  const naoLidas = lidas ? 0 : notificacoes.filter((n) => !n.lida).length
+  return (
+    <div ref={ref} className="relative">
+      <button onClick={() => setSino(!sino)} className="relative grid h-9 w-9 place-items-center rounded-lg text-c-sub hover:bg-c-hover" aria-label="Notificações">
+        <Bell size={17} />
+        {naoLidas > 0 && <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-c-bg" />}
+      </button>
+      {sino && (
+        <div className="absolute right-0 top-11 w-[340px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-c-borda bg-c-card shadow-2xl animate-[surgeBaixo_0.18s_ease-out]">
+          <div className="flex items-center justify-between border-b border-c-borda px-4 py-3">
+            <span className="text-[14px] font-semibold">Notificações</span>
+            <button onClick={() => setLidas(true)} className="text-[12px] font-medium text-c-acento hover:underline">
+              Marcar como lidas
+            </button>
+          </div>
+          {notificacoes.map((n) => (
+            <div key={n.id} className="flex gap-3 border-b border-c-borda px-4 py-3 last:border-0 hover:bg-c-hover">
+              <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${!n.lida && !lidas ? 'bg-c-acento' : 'bg-transparent'}`} />
+              <div className="min-w-0">
+                <p className="text-[13px] font-medium">{n.titulo}</p>
+                <p className="text-[12.5px] text-c-sub">{n.texto}</p>
+                <p className="mt-0.5 text-[11.5px] text-c-fraco">{n.tempo}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function Busca({ aberta, fechar, busca }: { aberta: boolean; fechar: () => void; busca: Props['busca'] }) {
   const [q, setQ] = useState('')
   const [sel, setSel] = useState(0)
   const ir = useNavigate()
