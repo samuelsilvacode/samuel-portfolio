@@ -1,32 +1,26 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { Link, NavLink, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { Link, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import {
   ArrowDownRight,
   ArrowLeft,
   ArrowUpRight,
-  Bell,
   Building2,
   Check,
-  ChevronRight,
   CircleDot,
-  Command,
   Download,
   FileText,
   Flame,
   KanbanSquare,
   LayoutGrid,
   Mail,
-  Menu,
   MessageCircle,
-  Moon,
   Package,
   Phone,
   Plus,
   Receipt,
   Search,
   Sparkles,
-  Sun,
   Target,
   TriangleAlert,
   Users,
@@ -59,10 +53,11 @@ import {
   type Oportunidade,
   type Pedido,
 } from './data'
-import { Avatar, Barra, Botao, Campo, Card, CrmProvider, Escolha, Gaveta, Mini, Modal, Pill, Segmentado, brlK, useCrm, useEsc, useFora } from './kit'
+import { Avatar, Barra, Botao, Campo, Card, CrmProvider, Escolha, Gaveta, Mini, Modal, Pill, Segmentado, brlK, useCrm } from '../kit'
+import Casca, { type ItemBusca, type ItemNav } from '../casca'
 
 // ---------- estado compartilhado ----------
-type Dados = { ops: Oportunidade[]; setOps: React.Dispatch<React.SetStateAction<Oportunidade[]>>; novaOp: () => void; abrirBusca: () => void }
+type Dados = { ops: Oportunidade[]; setOps: React.Dispatch<React.SetStateAction<Oportunidade[]>>; novaOp: () => void }
 const DadosCtx = createContext<Dados>(null!)
 const useDados = () => useContext(DadosCtx)
 
@@ -104,276 +99,73 @@ function Logo() {
 
 function Estrutura({ children }: { children: ReactNode }) {
   const [ops, setOps] = useState(opsIniciais)
-  const [menu, setMenu] = useState(false)
-  const [busca, setBusca] = useState(false)
   const [nova, setNova] = useState(false)
-  const { escuro, alternar } = useCrm()
-  const { pathname } = useLocation()
-  useEffect(() => {
-    setMenu(false)
-    window.scrollTo(0, 0)
-  }, [pathname])
-  useEffect(() => {
-    const h = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault()
-        setBusca((b) => !b)
-      }
-    }
-    window.addEventListener('keydown', h)
-    return () => window.removeEventListener('keydown', h)
-  }, [])
-
   const abertas = ops.filter((o) => o.coluna !== 'Fechado').length
   const emRisco = clientes.filter((c) => c.status !== 'Ativo').length
-  const nav: { to: string; label: string; icon: LucideIcon; end?: boolean; conta?: number; alerta?: boolean }[] = [
-    { to: '/crm', label: 'Painel', icon: LayoutGrid, end: true },
-    { to: '/crm/pipeline', label: 'Pipeline', icon: KanbanSquare, conta: abertas },
-    { to: '/crm/clientes', label: 'Clientes', icon: Building2, conta: emRisco, alerta: true },
-    { to: '/crm/pedidos', label: 'Pedidos', icon: Receipt },
-  ]
   const mes = vendasMes[vendasMes.length - 1]
   const pctMeta = Math.round((mes.realizado / mes.meta) * 100)
-
-  const lateral = (
-    <div className="flex h-full flex-col border-r border-c-borda bg-c-lateral">
-      <div className="flex h-16 items-center px-4">
-        <Logo />
-      </div>
-      <button onClick={() => setBusca(true)} className="mx-3 mb-3 flex h-9 items-center gap-2 rounded-lg border border-c-borda bg-c-card px-3 text-[13px] text-c-fraco hover:text-c-sub">
-        <Search size={14} /> Buscar
-        <kbd className="ml-auto rounded border border-c-borda px-1.5 text-[10.5px] font-medium">Ctrl K</kbd>
-      </button>
-      <nav className="flex-1 space-y-0.5 px-3">
-        <p className="px-2 pb-1.5 pt-2 text-[11px] font-medium text-c-fraco">Comercial</p>
-        {nav.map((n) => (
-          <NavLink
-            key={n.to}
-            to={n.to}
-            end={n.end}
-            className={({ isActive }) =>
-              `group flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium transition ${isActive ? 'bg-c-card text-c-texto shadow-[0_1px_3px_rgba(16,16,40,0.08)] ring-1 ring-c-borda' : 'text-c-sub hover:bg-c-hover hover:text-c-texto'}`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <n.icon size={16} strokeWidth={1.9} className={isActive ? 'text-c-acento' : ''} />
-                {n.label}
-                {n.conta != null && (
-                  <span className={`ml-auto rounded-md px-1.5 text-[11px] font-semibold tabular-nums ${n.alerta ? 'bg-amber-500/15 text-amber-600 [.escuro_&]:text-amber-300' : 'bg-c-hover text-c-sub'}`}>{n.conta}</span>
-                )}
-              </>
-            )}
-          </NavLink>
-        ))}
-        <p className="px-2 pb-1.5 pt-5 text-[11px] font-medium text-c-fraco">Visões salvas</p>
-        {[
-          ['Clientes em risco', '/crm/clientes?f=Em risco', 'bg-amber-500'],
-          ['Negócios quentes', '/crm/pipeline', 'bg-rose-500'],
-          ['Pedidos travados', '/crm/pedidos?f=Aguardando liberação', 'bg-sky-500'],
-        ].map(([t, to, cor]) => (
-          <Link key={t} to={to} className="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[13px] text-c-sub hover:bg-c-hover hover:text-c-texto">
-            <span className={`h-2 w-2 rounded-full ${cor}`} />
-            {t}
-          </Link>
-        ))}
-      </nav>
-      <div className="m-3 rounded-xl border border-c-borda bg-c-card p-3">
-        <div className="flex items-center justify-between text-[12px]">
-          <span className="font-medium">Meta de outubro</span>
-          <span className="font-semibold tabular-nums text-emerald-600 [.escuro_&]:text-emerald-400">{pctMeta}%</span>
-        </div>
-        <div className="mt-2">
-          <Barra pct={pctMeta} cor="linear-gradient(90deg,#7c6cff,#22c55e)" />
-        </div>
-        <p className="mt-2 text-[11.5px] text-c-fraco">{brlK(mes.realizado)} de {brlK(mes.meta)}</p>
-      </div>
-      <div className="flex items-center gap-2.5 border-t border-c-borda px-4 py-3">
-        <Avatar nome="Ana Ribeiro" tam={32} />
-        <div className="min-w-0 leading-tight">
-          <div className="truncate text-[13px] font-medium">Ana Ribeiro</div>
-          <div className="truncate text-[11.5px] text-c-fraco">Coordenadora comercial</div>
-        </div>
-        <button onClick={alternar} title={escuro ? 'Modo claro' : 'Modo escuro'} className="ml-auto grid h-8 w-8 place-items-center rounded-lg text-c-sub hover:bg-c-hover">
-          {escuro ? <Sun size={16} /> : <Moon size={16} />}
-        </button>
-      </div>
-    </div>
-  )
-
+  const nav: ItemNav[] = [
+    { to: '/crm', label: 'Painel', icon: LayoutGrid, end: true, grupo: 'Comercial' },
+    { to: '/crm/pipeline', label: 'Pipeline', icon: KanbanSquare, conta: abertas, grupo: 'Comercial' },
+    { to: '/crm/clientes', label: 'Clientes', icon: Building2, conta: emRisco, alerta: true, grupo: 'Comercial' },
+    { to: '/crm/pedidos', label: 'Pedidos', icon: Receipt, grupo: 'Comercial' },
+  ]
   return (
-    <DadosCtx.Provider value={{ ops, setOps, novaOp: () => setNova(true), abrirBusca: () => setBusca(true) }}>
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 lg:block">{lateral}</aside>
-      {menu && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setMenu(false)} />
-          <aside className="relative h-full w-64 animate-[entra_0.2s_ease-out]">{lateral}</aside>
-        </div>
-      )}
-      <div className="lg:pl-60">
-        <Topo abrirMenu={() => setMenu(true)} />
-        <main className="mx-auto max-w-[1400px] px-4 pb-10 pt-6 md:px-8">{children}</main>
-      </div>
-      <Busca aberta={busca} fechar={() => setBusca(false)} />
+    <DadosCtx.Provider value={{ ops, setOps, novaOp: () => setNova(true) }}>
+      <Casca
+        logo={<Logo />}
+        nav={nav}
+        atalhos={[
+          { titulo: 'Clientes em risco', to: '/crm/clientes?f=Em risco', cor: 'bg-amber-500' },
+          { titulo: 'Negócios quentes', to: '/crm/pipeline', cor: 'bg-rose-500' },
+          { titulo: 'Pedidos travados', to: '/crm/pedidos?f=Aguardando liberação', cor: 'bg-sky-500' },
+        ]}
+        cartao={
+          <>
+            <div className="flex items-center justify-between text-[12px]">
+              <span className="font-medium">Meta de outubro</span>
+              <span className="font-semibold tabular-nums text-emerald-600 [.escuro_&]:text-emerald-400">{pctMeta}%</span>
+            </div>
+            <div className="mt-2">
+              <Barra pct={pctMeta} cor="linear-gradient(90deg,#7c6cff,#22c55e)" />
+            </div>
+            <p className="mt-2 text-[11.5px] text-c-fraco">
+              {brlK(mes.realizado)} de {brlK(mes.meta)}
+            </p>
+          </>
+        }
+        usuario="Ana Ribeiro"
+        cargo="Coordenadora comercial"
+        acao={
+          <Botao primario onClick={() => setNova(true)}>
+            <Plus size={15} /> <span className="hidden sm:inline">Nova oportunidade</span>
+          </Botao>
+        }
+        secao="Comercial"
+        trilha={trilha}
+        busca={buscar}
+        notificacoes={notificacoes}
+      >
+        {children}
+      </Casca>
       <NovaOportunidade aberta={nova} fechar={() => setNova(false)} />
     </DadosCtx.Provider>
   )
 }
 
 const NOMES_ROTA: Record<string, string> = { '': 'Painel', pipeline: 'Pipeline', clientes: 'Clientes', pedidos: 'Pedidos' }
+const trilha = (partes: string[]) => [NOMES_ROTA[partes[0] ?? ''] ?? 'Painel', ...(partes[1] ? [clientePorId(Number(partes[1]))?.nome ?? ''] : [])]
 
-function Topo({ abrirMenu }: { abrirMenu: () => void }) {
-  const { pathname } = useLocation()
-  const partes = pathname.replace(/^\/crm\/?/, '').split('/')
-  const { novaOp, abrirBusca } = useDados()
-  const [sino, setSino] = useState(false)
-  const [lidas, setLidas] = useState(false)
-  const fechar = useCallback(() => setSino(false), [])
-  const ref = useFora<HTMLDivElement>(sino, fechar)
-  const naoLidas = lidas ? 0 : notificacoes.filter((n) => !n.lida).length
-  return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-c-borda bg-c-bg/80 px-4 backdrop-blur-xl md:px-8">
-      <button className="-ml-1 grid h-9 w-9 place-items-center rounded-lg hover:bg-c-hover lg:hidden" onClick={abrirMenu} aria-label="Menu">
-        <Menu size={18} />
-      </button>
-      <div className="flex min-w-0 items-center gap-1.5 text-[13.5px]">
-        <span className="hidden text-c-fraco sm:inline">Comercial</span>
-        <ChevronRight size={14} className="hidden text-c-fraco sm:inline" />
-        <span className="truncate font-medium">{NOMES_ROTA[partes[0]] ?? 'Painel'}</span>
-        {partes[1] && (
-          <>
-            <ChevronRight size={14} className="text-c-fraco" />
-            <span className="truncate text-c-sub">{clientePorId(Number(partes[1]))?.nome}</span>
-          </>
-        )}
-      </div>
-      <div className="ml-auto flex items-center gap-2">
-        <button onClick={abrirBusca} className="grid h-9 w-9 place-items-center rounded-lg text-c-sub hover:bg-c-hover lg:hidden" aria-label="Buscar">
-          <Search size={17} />
-        </button>
-        <div ref={ref} className="relative">
-          <button onClick={() => setSino(!sino)} className="relative grid h-9 w-9 place-items-center rounded-lg text-c-sub hover:bg-c-hover" aria-label="Notificações">
-            <Bell size={17} />
-            {naoLidas > 0 && <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-c-bg" />}
-          </button>
-          {sino && (
-            <div className="absolute right-0 top-11 w-[340px] overflow-hidden rounded-2xl border border-c-borda bg-c-card shadow-2xl animate-[surgeBaixo_0.18s_ease-out]">
-              <div className="flex items-center justify-between border-b border-c-borda px-4 py-3">
-                <span className="text-[14px] font-semibold">Notificações</span>
-                <button onClick={() => setLidas(true)} className="text-[12px] font-medium text-c-acento hover:underline">
-                  Marcar como lidas
-                </button>
-              </div>
-              {notificacoes.map((n) => (
-                <div key={n.id} className="flex gap-3 border-b border-c-borda px-4 py-3 last:border-0 hover:bg-c-hover">
-                  <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${!n.lida && !lidas ? 'bg-c-acento' : 'bg-transparent'}`} />
-                  <div className="min-w-0">
-                    <p className="text-[13px] font-medium">{n.titulo}</p>
-                    <p className="text-[12.5px] text-c-sub">{n.texto}</p>
-                    <p className="mt-0.5 text-[11.5px] text-c-fraco">{n.tempo}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        <Botao primario onClick={novaOp}>
-          <Plus size={15} /> <span className="hidden sm:inline">Nova oportunidade</span>
-        </Botao>
-        <Link to="/" className="hidden whitespace-nowrap rounded-lg px-2 text-[12px] text-c-fraco hover:text-c-texto xl:block">
-          ← portfólio
-        </Link>
-      </div>
-    </header>
-  )
-}
-
-// ---------- busca rápida (Ctrl K) ----------
-function Busca({ aberta, fechar }: { aberta: boolean; fechar: () => void }) {
-  const [q, setQ] = useState('')
-  const [sel, setSel] = useState(0)
-  const ir = useNavigate()
-  useEsc(aberta, fechar)
-  useEffect(() => {
-    if (aberta) {
-      setQ('')
-      setSel(0)
-    }
-  }, [aberta])
-  const itens = useMemo(() => {
-    const t = q.toLowerCase()
-    const paginas = [
-      { grupo: 'Páginas', titulo: 'Painel', sub: 'Visão do mês', to: '/crm', icone: LayoutGrid },
-      { grupo: 'Páginas', titulo: 'Pipeline', sub: 'Oportunidades por etapa', to: '/crm/pipeline', icone: KanbanSquare },
-      { grupo: 'Páginas', titulo: 'Clientes', sub: 'Carteira completa', to: '/crm/clientes', icone: Building2 },
-      { grupo: 'Páginas', titulo: 'Pedidos', sub: 'Últimos 90 dias', to: '/crm/pedidos', icone: Receipt },
-    ]
-    const cli = clientes.map((c) => ({ grupo: 'Clientes', titulo: c.nome, sub: `${c.cidade} · ${c.vendedor}`, to: `/crm/clientes/${c.id}`, icone: Building2 }))
-    const ped = pedidos.slice(0, 40).map((p) => ({ grupo: 'Pedidos', titulo: `Pedido ${p.numero}`, sub: `${clientePorId(p.clienteId).nome} · ${brl(p.valor)}`, to: `/crm/pedidos?n=${p.numero}`, icone: FileText }))
-    return [...paginas, ...cli, ...ped].filter((i) => !t || (i.titulo + i.sub).toLowerCase().includes(t)).slice(0, 9)
-  }, [q])
-  if (!aberta) return null
-  const escolher = (to: string) => {
-    fechar()
-    ir(to)
-  }
-  return (
-    <div className="fixed inset-0 z-[75] flex items-start justify-center p-4 pt-[12vh]">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={fechar} />
-      <div className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-c-borda bg-c-card shadow-2xl animate-[surgeBaixo_0.18s_ease-out]">
-        <div className="flex items-center gap-3 border-b border-c-borda px-4">
-          <Search size={17} className="text-c-fraco" />
-          <input
-            autoFocus
-            value={q}
-            onChange={(e) => {
-              setQ(e.target.value)
-              setSel(0)
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'ArrowDown') {
-                e.preventDefault()
-                setSel((s) => Math.min(itens.length - 1, s + 1))
-              } else if (e.key === 'ArrowUp') {
-                e.preventDefault()
-                setSel((s) => Math.max(0, s - 1))
-              } else if (e.key === 'Enter' && itens[sel]) escolher(itens[sel].to)
-            }}
-            placeholder="Buscar cliente, pedido ou página…"
-            className="h-14 flex-1 bg-transparent text-[15px] outline-none placeholder:text-c-fraco"
-          />
-          <kbd className="rounded border border-c-borda px-1.5 text-[11px] text-c-fraco">Esc</kbd>
-        </div>
-        <div className="max-h-[50vh] overflow-y-auto p-2">
-          {!itens.length && <p className="px-3 py-8 text-center text-[13px] text-c-fraco">Nada encontrado para “{q}”.</p>}
-          {itens.map((i, k) => (
-            <div key={i.to + k}>
-              {(k === 0 || itens[k - 1].grupo !== i.grupo) && <p className="px-3 pb-1 pt-2 text-[11px] font-medium text-c-fraco">{i.grupo}</p>}
-              <button
-                onMouseEnter={() => setSel(k)}
-                onClick={() => escolher(i.to)}
-                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left ${sel === k ? 'bg-c-hover' : ''}`}
-              >
-                {i.grupo === 'Clientes' ? <Avatar nome={i.titulo} tam={26} quadrado /> : <span className="grid h-[26px] w-[26px] place-items-center rounded-lg bg-c-hover text-c-sub"><i.icone size={14} /></span>}
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[13.5px] font-medium">{i.titulo}</span>
-                  <span className="block truncate text-[12px] text-c-fraco">{i.sub}</span>
-                </span>
-                {sel === k && <span className="text-[11px] text-c-fraco">Enter ↵</span>}
-              </button>
-            </div>
-          ))}
-        </div>
-        <div className="flex items-center gap-4 border-t border-c-borda px-4 py-2.5 text-[11.5px] text-c-fraco">
-          <span>↑↓ navegar</span>
-          <span>↵ abrir</span>
-          <span className="ml-auto flex items-center gap-1">
-            <Command size={12} /> Ctrl K abre de qualquer tela
-          </span>
-        </div>
-      </div>
-    </div>
-  )
+function buscar(t: string): ItemBusca[] {
+  const paginas: ItemBusca[] = [
+    { grupo: 'Páginas', titulo: 'Painel', sub: 'Visão do mês', to: '/crm', icone: LayoutGrid },
+    { grupo: 'Páginas', titulo: 'Pipeline', sub: 'Oportunidades por etapa', to: '/crm/pipeline', icone: KanbanSquare },
+    { grupo: 'Páginas', titulo: 'Clientes', sub: 'Carteira completa', to: '/crm/clientes', icone: Building2 },
+    { grupo: 'Páginas', titulo: 'Pedidos', sub: 'Últimos 90 dias', to: '/crm/pedidos', icone: Receipt },
+  ]
+  const cli: ItemBusca[] = clientes.map((c) => ({ grupo: 'Clientes', titulo: c.nome, sub: `${c.cidade} · ${c.vendedor}`, to: `/crm/clientes/${c.id}`, avatar: true, quadrado: true }))
+  const ped: ItemBusca[] = pedidos.slice(0, 40).map((p) => ({ grupo: 'Pedidos', titulo: `Pedido ${p.numero}`, sub: `${clientePorId(p.clienteId).nome} · ${brl(p.valor)}`, to: `/crm/pedidos?n=${p.numero}`, icone: FileText }))
+  return [...paginas, ...cli, ...ped].filter((i) => !t || (i.titulo + i.sub).toLowerCase().includes(t))
 }
 
 // ---------- nova oportunidade ----------

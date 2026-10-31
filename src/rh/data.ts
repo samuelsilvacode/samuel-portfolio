@@ -117,3 +117,53 @@ export const reservasIniciais: Reserva[] = Array.from({ length: 16 }, () => ({
 }))
 
 export const admissoesMes = ['Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out'].map((m) => ({ mes: m, admissoes: 2 + Math.floor(r() * 6), desligamentos: Math.floor(r() * 4) }))
+
+// ---- extras da versão nova ----
+
+export const corEtapa: Record<Etapa, string> = {
+  Triagem: '#94a3b8',
+  'Entrevista RH': '#38bdf8',
+  'Entrevista gestor': '#a78bfa',
+  Proposta: '#f59e0b',
+  Contratado: '#22c55e',
+}
+
+export const corDepto: Record<string, string> = {
+  Comercial: '#0d9488',
+  Financeiro: '#6366f1',
+  Logística: '#f59e0b',
+  TI: '#0ea5e9',
+  RH: '#ec4899',
+  Atendimento: '#22c55e',
+  Compras: '#a855f7',
+}
+
+export const notificacoesRh = [
+  { id: 1, titulo: 'Experiência vencendo', texto: '2 avaliações de 90 dias vencem nesta semana', tempo: 'há 20 min', lida: false },
+  { id: 2, titulo: 'Novo candidato', texto: 'Desenvolvedor Full Stack recebeu 3 candidaturas hoje', tempo: 'há 1 h', lida: false },
+  { id: 3, titulo: 'Treinamento obrigatório', texto: 'LGPD no dia a dia termina em 5 dias com 11 pendentes', tempo: 'há 4 h', lida: false },
+  { id: 4, titulo: 'Clima 2026', texto: 'Relatório final da pesquisa disponível', tempo: 'ontem', lida: true },
+]
+
+export const serieRh = (seed: number, base: number, passo = 0.03) => {
+  const rr = rng(((seed * 2654435761) % 2147483646) + 1)
+  let v = base
+  return Array.from({ length: 12 }, () => {
+    v = Math.max(1, v * (1 + passo * (rr() - 0.35)))
+    return { v: Math.round(v * 10) / 10 }
+  })
+}
+
+export const tempoDeCasa = (c: Colaborador) => {
+  const meses = Math.round((hoje.getTime() - c.admissao.getTime()) / (86400000 * 30.4))
+  return meses < 12 ? `${meses} ${meses === 1 ? 'mês' : 'meses'}` : `${Math.floor(meses / 12)} ${meses >= 24 ? 'anos' : 'ano'}${meses % 12 ? ` e ${meses % 12} m` : ''}`
+}
+
+export const diasAberta = (v: Vaga) => Math.round((hoje.getTime() - v.abertura.getTime()) / 86400000)
+
+export const sentimento: Record<string, 'positivo' | 'neutro' | 'negativo'> = {
+  Reconhecimento: 'neutro',
+  Ambiente: 'positivo',
+  Remuneração: 'negativo',
+  Comunicação: 'negativo',
+}

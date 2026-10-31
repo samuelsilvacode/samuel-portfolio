@@ -23,3 +23,5 @@ html { scroll-behavior: smooth; }
 @keyframes surgeDireita { from { transform: translateX(100%) } to { transform: none } }
 @keyframes surgeBaixo { from { opacity: 0; transform: translateY(8px) scale(.98) } to { opacity: 1; transform: none } }
 @keyframes brilhoNovo { from { background: rgb(var(--c-acento) / .12) } to { background: transparent } }
+.crm.rh { --c-acento: 13 148 136; }
+.crm.rh.escuro { --c-acento: 20 184 166; }

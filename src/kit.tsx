@@ -6,6 +6,9 @@ import { CheckCircle2, Info, X } from 'lucide-react'
 export type Cores = { acento: string; acentoSuave: string; grade: string; eixo: string; texto: string; card: string; borda: string; meta: string }
 const CLARO: Cores = { acento: '#6357f5', acentoSuave: '#a5a0fb', grade: '#ececf2', eixo: '#9294a4', texto: '#12121c', card: '#ffffff', borda: '#e5e5ec', meta: '#c4c4d0' }
 const ESCURO: Cores = { acento: '#8b80ff', acentoSuave: '#5b52c9', grade: '#26263a', eixo: '#6f7188', texto: '#ececf4', card: '#12121a', borda: '#262634', meta: '#4a4a62' }
+// o RH usa a mesma base com acento verde-azulado
+const ACENTO_RH = { claro: { acento: '#0d9488', acentoSuave: '#5eead4' }, escuro: { acento: '#14b8a6', acentoSuave: '#115e59' } }
+export type Variante = 'crm' | 'rh'
 
 type Ctx = { escuro: boolean; alternar: () => void; cores: Cores; avisar: (texto: string, tipo?: 'ok' | 'info') => void }
 const TemaCtx = createContext<Ctx>(null!)
@@ -13,10 +16,10 @@ export const useCrm = () => useContext(TemaCtx)
 
 type Aviso = { id: number; texto: string; tipo: 'ok' | 'info' }
 
-export function CrmProvider({ children }: { children: ReactNode }) {
+export function CrmProvider({ children, variante = 'crm' }: { children: ReactNode; variante?: Variante }) {
   const [escuro, setEscuro] = useState(() => {
     try {
-      return localStorage.getItem('crm-escuro') === '1'
+      return localStorage.getItem(`${variante}-escuro`) === '1'
     } catch {
       return false
     }
@@ -25,7 +28,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
   const alternar = () =>
     setEscuro((e) => {
       try {
-        localStorage.setItem('crm-escuro', e ? '0' : '1')
+        localStorage.setItem(`${variante}-escuro`, e ? '0' : '1')
       } catch {
         /* sem storage, segue só na sessão */
       }
@@ -37,8 +40,8 @@ export function CrmProvider({ children }: { children: ReactNode }) {
     setTimeout(() => setAvisos((l) => l.filter((a) => a.id !== id)), 3200)
   }, [])
   return (
-    <TemaCtx.Provider value={{ escuro, alternar, cores: escuro ? ESCURO : CLARO, avisar }}>
-      <div className={`crm min-h-screen bg-c-bg text-c-texto antialiased ${escuro ? 'escuro' : ''}`}>
+    <TemaCtx.Provider value={{ escuro, alternar, cores: { ...(escuro ? ESCURO : CLARO), ...(variante === 'rh' ? ACENTO_RH[escuro ? 'escuro' : 'claro'] : {}) }, avisar }}>
+      <div className={`crm min-h-screen bg-c-bg text-c-texto antialiased ${variante === 'rh' ? 'rh' : ''} ${escuro ? 'escuro' : ''}`}>
         {children}
         <div className="pointer-events-none fixed bottom-4 right-4 z-[80] flex flex-col items-end gap-2">
           {avisos.map((a) => (

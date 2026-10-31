@@ -68,7 +68,14 @@ export const projetos: Projeto[] = [
       'Feito para um grupo com mais de uma empresa: cadastro de pessoas, processo seletivo, avaliação de experiência com alerta de prazo, treinamentos e PDI, pesquisa de clima e a agenda das salas de reunião.',
       'Também é uma versão de demonstração, com dados fictícios, das telas que mais usam no dia a dia.',
     ],
-    pontos: ['Avaliação de experiência com contagem de dias', 'Processo seletivo por vaga em kanban', 'Pesquisa de clima com eNPS', 'Reserva de salas com um clique'],
+    pontos: [
+      'Avaliação de experiência com prazo de 45 e 90 dias e pedido ao gestor',
+      'Processo seletivo por vaga em kanban, com nota e etapas do candidato',
+      'Perfil do colaborador com PDI e histórico',
+      'Treinamentos com andamento e lembrete pros pendentes',
+      'Pesquisa de clima com eNPS e comparação com o ano anterior',
+      'Agenda das salas com reserva em um clique, modo claro e escuro',
+    ],
     stack: ['React', 'TypeScript', 'Next.js', 'Spring Boot', 'PostgreSQL'],
     demo: '/rh',
     telas: [
