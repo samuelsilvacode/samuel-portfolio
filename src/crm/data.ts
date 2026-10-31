@@ -152,11 +152,11 @@ export const metaVendedor: Record<string, number> = Object.fromEntries(
 
 // Série diária do mês para os mini gráficos dos indicadores
 export const serieDiaria = (seed: number, base: number, tendencia = 0.02) => {
-  const rr = rng(seed)
+  const rr = rng(((seed * 2654435761) % 2147483646) + 1)
   let v = base
   return Array.from({ length: 22 }, (_, i) => {
-    v = v * (1 + tendencia * (rr() - 0.35))
-    return { d: i + 1, v: Math.round(v) }
+    v = v * (1 + 0.05 * (rr() - 0.5) + tendencia)
+    return { d: i + 1, v: Math.round(v * 100) / 100 }
   })
 }
 
