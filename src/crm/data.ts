@@ -71,7 +71,7 @@ export const pedidos: Pedido[] = Array.from({ length: 60 }, (_, i): Pedido => {
     clienteId: c.id,
     data: diasAtras(Math.floor(r() * 90)),
     valor: Math.round((2 + r() * 60) * 1000),
-    itens: 1 + Math.floor(r() * 14),
+    itens: 1 + Math.floor(r() * 8),
     status: st < 0.62 ? 'Faturado' : st < 0.8 ? 'Em separação' : st < 0.94 ? 'Aguardando liberação' : 'Cancelado',
     vendedor: c.vendedor,
   }
@@ -122,3 +122,95 @@ export function resumoIA(c: Cliente, eventos: Evento[]) {
 }
 
 export const clientePorId = (id: number) => clientes.find((c) => c.id === id)!
+
+// ---- extras da versão nova ----
+
+export const probabilidade: Record<Coluna, number> = { Prospecção: 10, Qualificação: 25, Proposta: 50, Negociação: 75, Fechado: 100 }
+
+export const corColuna: Record<Coluna, string> = {
+  Prospecção: '#94a3b8',
+  Qualificação: '#38bdf8',
+  Proposta: '#a78bfa',
+  Negociação: '#f59e0b',
+  Fechado: '#22c55e',
+}
+
+// Nota de saúde do cliente (0 a 100): quanto comprou do potencial e há quanto tempo não compra
+export function saude(c: Cliente) {
+  const uso = c.compras12m / c.potencial
+  const dias = (hoje.getTime() - c.ultimaCompra.getTime()) / 86400000
+  const teto = c.status === 'Ativo' ? 98 : c.status === 'Em risco' ? 60 : 35
+  return Math.max(5, Math.min(teto, Math.round(uso * 70 + Math.max(0, 40 - dias * 0.4))))
+}
+
+export const diasSemComprar = (c: Cliente) => Math.round((hoje.getTime() - c.ultimaCompra.getTime()) / 86400000)
+
+// meta de 90 dias de cada vendedor: um quarto do potencial anual da carteira dele
+export const metaVendedor: Record<string, number> = Object.fromEntries(
+  vendedores.map((v) => [v, Math.max(100000, Math.round(clientes.filter((c) => c.vendedor === v).reduce((s, c) => s + c.potencial, 0) * 0.25 / 10000) * 10000)]),
+)
+
+// Série diária do mês para os mini gráficos dos indicadores
+export const serieDiaria = (seed: number, base: number, tendencia = 0.02) => {
+  const rr = rng(seed)
+  let v = base
+  return Array.from({ length: 22 }, (_, i) => {
+    v = v * (1 + tendencia * (rr() - 0.35))
+    return { d: i + 1, v: Math.round(v) }
+  })
+}
+
+const catalogo: [string, number][] = [
+  ['Luva nitrílica M (cx 100)', 38.9],
+  ['Seringa 10 ml (cx 100)', 62.5],
+  ['Cateter IV 22G (cx 50)', 119.0],
+  ['Máscara N95 (cx 20)', 74.0],
+  ['Equipo macrogotas (un)', 4.8],
+  ['Fio de sutura nylon 3-0 (cx 24)', 96.0],
+  ['Avental descartável (pct 10)', 29.9],
+  ['Kit curativo estéril (un)', 7.5],
+]
+
+export function itensPedido(p: Pedido) {
+  const rr = rng(p.numero)
+  const usados = new Set<number>()
+  // distribui o valor do pedido entre os itens, pra soma bater com o total
+  const pesos = Array.from({ length: p.itens }, () => 0.3 + rr())
+  const soma = pesos.reduce((a, b) => a + b, 0)
+  return pesos.map((w) => {
+    let k = Math.floor(rr() * catalogo.length)
+    while (usados.has(k)) k = (k + 1) % catalogo.length
+    usados.add(k)
+    const [nome, preco] = catalogo[k]
+    return { nome, preco, qtd: Math.max(1, Math.round((p.valor * w) / soma / preco)) }
+  })
+}
+
+export type Atividade = { id: number; quem: string; acao: string; alvo: string; clienteId: number; minutos: number; tipo: Evento['tipo'] | 'Pipeline' }
+
+const acoes: [Atividade['tipo'], string][] = [
+  ['Pedido', 'emitiu um pedido para'],
+  ['Ligação', 'ligou para'],
+  ['WhatsApp', 'respondeu no WhatsApp'],
+  ['E-mail', 'enviou proposta para'],
+  ['Pipeline', 'levou para negociação a conta de'],
+  ['Reunião', 'agendou reunião com'],
+  ['Amostra', 'enviou amostras para'],
+]
+
+export function gerarAtividade(seed: number, minutos: number): Atividade {
+  // semente espalhada: com números pequenos o gerador devolve quase sempre o mesmo primeiro valor
+  const rr = rng(((seed * 2654435761) % 2147483646) + 1)
+  const c = pick(rr, clientes)
+  const [tipo, acao] = pick(rr, acoes)
+  return { id: seed, quem: c.vendedor, acao, alvo: c.nome, clienteId: c.id, minutos, tipo }
+}
+
+export const atividadesIniciais = Array.from({ length: 7 }, (_, i) => gerarAtividade(i + 1, [2, 9, 17, 34, 52, 75, 110][i]))
+
+export const notificacoes = [
+  { id: 1, titulo: 'Pedido aguardando liberação', texto: 'Hospital São Lucas · pedido 48231 passou do limite de crédito', tempo: 'há 12 min', lida: false },
+  { id: 2, titulo: 'Meta batida', texto: 'O time passou de 100% da meta de outubro', tempo: 'há 1 h', lida: false },
+  { id: 3, titulo: 'Oportunidade parada', texto: '3 oportunidades sem movimento há mais de 20 dias', tempo: 'há 3 h', lida: false },
+  { id: 4, titulo: 'Cliente reativado', texto: 'Clínica Alvorada voltou a comprar depois de 98 dias', tempo: 'ontem', lida: true },
+]

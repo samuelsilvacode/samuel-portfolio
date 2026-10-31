@@ -44,7 +44,14 @@ export const projetos: Projeto[] = [
       'Antes era planilha e consulta direto no ERP. Agora o vendedor abre a ficha do cliente e vê pedidos, ligações, reclamações e oportunidades num lugar só, e a coordenação acompanha meta e pipeline em tempo real.',
       'O sistema original roda em produção há mais de um ano, com cerca de 2.000 commits. Esta é uma versão de demonstração com empresa e dados fictícios, montada para mostrar as telas principais.',
     ],
-    pontos: ['Painel do mês com meta x realizado e ranking', 'Pipeline em kanban com arrastar e soltar', 'Ficha 360° com linha do tempo do cliente', 'Pedidos com filtros e exportação para Excel'],
+    pontos: [
+      'Painel com meta do mês, funil de vendas e atividade do time ao vivo',
+      'Pipeline em kanban com arrastar e soltar e valor ponderado por etapa',
+      'Ficha 360° com linha do tempo, nota de saúde e resumo com IA',
+      'Pedidos com detalhe dos itens, filtros e exportação para Excel',
+      'Busca rápida com Ctrl K de qualquer tela',
+      'Modo claro e escuro',
+    ],
     stack: ['React', 'TypeScript', 'Spring Boot', 'SQL Server', 'ERP', 'WhatsApp'],
     demo: '/crm',
     telas: [

@@ -7,3 +7,19 @@ body { @apply bg-[#f4f4f2] text-stone-800 antialiased; }
 @keyframes flutua { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-10px) } }
 @keyframes entra { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: none } }
 html { scroll-behavior: smooth; }
+
+/* Tokens do CRM (claro/escuro) */
+.crm {
+  --c-bg: 246 246 249; --c-card: 255 255 255; --c-borda: 229 229 236; --c-texto: 18 18 28; --c-sub: 88 91 108;
+  --c-fraco: 146 148 164; --c-hover: 241 241 246; --c-acento: 99 87 245; --c-lateral: 251 251 253;
+  font-family: Inter, system-ui, sans-serif; font-feature-settings: 'cv11', 'ss01'; color-scheme: light;
+}
+.crm.escuro {
+  --c-bg: 10 10 15; --c-card: 18 18 26; --c-borda: 38 38 52; --c-texto: 236 236 244; --c-sub: 158 160 178;
+  --c-fraco: 102 104 122; --c-hover: 28 28 40; --c-acento: 139 128 255; --c-lateral: 14 14 20; color-scheme: dark;
+}
+.crm ::-webkit-scrollbar { width: 8px; height: 8px }
+.crm ::-webkit-scrollbar-thumb { background: rgb(var(--c-borda)); border-radius: 8px }
+@keyframes surgeDireita { from { transform: translateX(100%) } to { transform: none } }
+@keyframes surgeBaixo { from { opacity: 0; transform: translateY(8px) scale(.98) } to { opacity: 1; transform: none } }
+@keyframes brilhoNovo { from { background: rgb(var(--c-acento) / .12) } to { background: transparent } }
